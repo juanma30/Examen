@@ -35,8 +35,8 @@ class controller{
         }
         die( json_encode($this->data) );
       }
-    }else return json_encode('{"error":"404 Not Found"}');
-
+    }
+    die( json_encode(["error" => "404 Not Found"]) );
   }
 
   function obtiene_datos($tabla="",$id=null){
@@ -47,6 +47,7 @@ class controller{
               FROM ${tabla}
               ${filter}
             ";
+
     return $this->cc->get_query($query);
   }
 
