@@ -28,7 +28,27 @@ class dbConect {
   //Realizara cambios en la base
   function post_query($sql){
     $data = $this->conex->query($sql);
+    echo "<pre>";
+    print_r($data);
+    echo "</pre>";
     return $data;
+  }
+
+  //Crea la consulta
+  function set_query($tabla="dependencias",$data=null,$action="insert"){
+    $colum = "";
+    $values = "";
+    print_r($data);
+    foreach ($data as $k => $val) {
+      $colum .= "${k},";
+      $values .= "'${val}',";
+    }
+    $colum = trim($colum,',');
+    $values = trim($values,',');
+    if ($action == 'insert') $query = "INSERT INTO ${tabla} (${colum}) VALUES(${values})";
+    else $query = "UPDATE ${tabla} SET isDelete=1 WHERE uuid = '".$data['uuid']."'";
+    $result = $this->post_query($query);
+    return $result;
   }
 
   //Termina la conexion
