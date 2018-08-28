@@ -28,9 +28,6 @@ class dbConect {
   //Realizara cambios en la base
   function post_query($sql){
     $data = $this->conex->query($sql);
-    echo "<pre>";
-    print_r($data);
-    echo "</pre>";
     return $data;
   }
 
@@ -38,7 +35,6 @@ class dbConect {
   function set_query($tabla="dependencias",$data=null,$action="insert"){
     $colum = "";
     $values = "";
-    print_r($data);
     foreach ($data as $k => $val) {
       $colum .= "${k},";
       $values .= "'${val}',";

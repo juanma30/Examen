@@ -26,7 +26,9 @@ class controller{
               if ($bt == "dependencias") {
                 $this->data[] = array(
                   "uuid" => $val["uuid"],
-                  "dependencia" => $val["nombre"]
+                  "dependencia" => $val["nombre"],
+                  "codigo" => "200 Ok",
+                  "success" => true
                 );
               }else{
                 $this->data[] = array(
@@ -42,11 +44,13 @@ class controller{
             }
             break;
           case 'POST':
-            $res = $this->modifica_datos($bt);
-            $this->data = array(
-              "codigo" => "201 Created",
-              "success" => true
-            );
+            $res = $this->modifica_datos($bt,$id);
+            if ($res) {
+              $this->data = array(
+                "codigo" => "201 Created",
+                "success" => true
+              );
+            }
             break;
         }
         die( json_encode($this->data) );
@@ -57,7 +61,7 @@ class controller{
 
   function obtiene_datos($tabla="",$id=null){
     $idx = filter_var($id,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $filter = $id ? " AND '${idx}' " : '';
+    $filter = $id ? " AND uuid = '${idx}' " : '';
     $query = "
               SELECT *
               FROM ${tabla}
@@ -92,10 +96,9 @@ class controller{
     );
     $tmp = filter_var_array($_POST,$opt);
     foreach ($tmp as $key => $value) {
-      print_r($value);
       $value && ($send[$labels[$key]] = $value);
     }
-    if ($tabla == "dependencias" && $filt != "1") {
+    if ($tabla == "dependencias" && $filt == "1") {
       $send["uuid"] = md5($send['nombre'].date('Ymd'));
     }
     if ($filt == '1') $result = $this->cc->set_query($tabla,$send,'insert');
